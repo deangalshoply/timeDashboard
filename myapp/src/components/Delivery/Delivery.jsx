@@ -15,8 +15,8 @@ export default function Delivery({domain}) {
     //mbs load data
     if(mbs[2] != undefined){
 
-        RenderMbs = mbs[2].data.map(element => (
-            <tr>
+        RenderMbs = mbs[2].data.map((element,index) => (
+            <tr key={index}>
                 <td>{element.id}</td>
                 <td>{element.timestamp}</td>
             </tr>
@@ -27,8 +27,8 @@ export default function Delivery({domain}) {
     //hesed load data
     if(hesed[2] != undefined){
 
-        RenderHesed = hesed[2].data.map(element => (
-            <tr>
+        RenderHesed = hesed[2].data.map((element,index) => (
+            <tr key={index}>
                 <td>{element.id}</td>
                 <td>{element.timestamp}</td>
             </tr>
@@ -39,11 +39,11 @@ export default function Delivery({domain}) {
     return (
         <table className='Table'>
             <thead>
-                   <div className={(domain == 'mbs') ? 'Header' : 'HeaderHesed'}>Delivery</div>
+                   <div className={(domain.domain == 'mbs') ? 'Header' : 'HeaderHesed'}>Delivery</div>
 
         <tr>
-            <th className={(domain == 'mbs') ? 'thMbs' : 'thHesed'}>id</th>
-            <th className={(domain == 'mbs') ? 'thMbs' : 'thHesed'}>timestamp</th>
+            <th className={(domain.domain == 'mbs') ? 'thMbs' : 'thHesed'}>id</th>
+            <th className={(domain.domain == 'mbs') ? 'thMbs' : 'thHesed'}>timestamp</th>
         </tr>
             </thead>
            

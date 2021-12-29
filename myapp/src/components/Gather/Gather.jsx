@@ -15,9 +15,9 @@ export default function Gather({domain}) {
     //mbs load data
     if(mbs[1] != undefined){
 
-        RenderMbs = mbs[1].data.map(element => (
-            <tr>
-                <td>{element.id}</td>
+        RenderMbs = mbs[1].data.map((element,index) => (
+            <tr key={index}>
+                <td >{element.id}</td>
                 <td>{element.timestamp}</td>
             </tr>
              
@@ -27,8 +27,8 @@ export default function Gather({domain}) {
     //hesed load data
     if(hesed[1] != undefined){
 
-        RenderHesed = hesed[1].data.map(element => (
-            <tr>
+        RenderHesed = hesed[1].data.map((element,index) => (
+            <tr key={index}>
                 <td>{element.id}</td>
                 <td>{element.timestamp}</td>
             </tr>
@@ -39,12 +39,10 @@ export default function Gather({domain}) {
     return (
         <table className='Table'>
             <thead>
-                    <div className={(domain == 'mbs') ? 'Header' : 'HeaderHesed'}>Gather</div>
-
-
+                    <div className={(domain.domain == 'mbs') ? 'Header' : 'HeaderHesed'}>Gather</div>
         <tr>
-            <th className={(domain == 'mbs') ? 'thMbs' : 'thHesed'}>id</th>
-            <th className={(domain == 'mbs') ? 'thMbs' : 'thHesed'}>timestamp</th>
+            <th className={(domain.domain == 'mbs') ? 'thMbs' : 'thHesed'}>id</th>
+            <th className={(domain.domain == 'mbs') ? 'thMbs' : 'thHesed'}>timestamp</th>
         </tr>
             </thead>
            
