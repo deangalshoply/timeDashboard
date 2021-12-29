@@ -1,0 +1,121 @@
+html{
+  background-color: rgb(235, 233, 233);
+  overflow: hidden;
+}
+
+.App {
+  text-align: center;
+  height: 100vh;
+}
+
+table {
+  position: relative;
+  top: 10vh;
+  font-family: arial, sans-serif;
+  width: 100%;
+  border: black 1px solid;
+  border-collapse: collapse;
+}
+
+td, th {
+  border: 2px solid #412b2b;
+  text-align: center;
+  padding: 8px;
+  width: 12.5vw;
+  font-size: xx-large;
+  background-color: white;
+}
+
+thead,th{
+  border: 2px solid #412b2b;
+
+}
+
+.thMbs{
+  background-color: #a4d5e6;
+
+}
+.thHesed{
+  background-color: #ffdfb9;
+
+}
+
+tr:hover {  background-color: rgb(155, 155, 155);
+}
+
+
+
+
+.HeaderHesed{
+  font-size: 45px;
+  font-weight: 500;
+  width: 220%;
+  background-color: #FEB866;
+}
+
+.Header{
+  font-size: 45px;
+  font-weight: 500;
+  width: 220%;
+  background-color: #6EB3CA;
+}
+
+.New{
+  height: 5vh;
+  font-size: xx-large;
+  
+  /* gap: 15px; */
+}
+
+.Gather{
+  height: 5vh;
+  font-size: xx-large;
+
+ 
+  /* gap: 15px; */
+}
+
+.Delivery{
+  height: 5vh;
+  font-size: xx-large;
+
+ 
+  /* gap: 15px; */
+}
+
+.Done{
+  height: 5vh;
+  font-size: xx-large;
+  
+  /* gap: 15px; */
+}
+
+.AllLines{
+  display: flex;
+  justify-content: center;
+}
+
+
+#mbs{
+  border:  black 3px solid;
+}
+
+#hesed{
+  background-color: rgb(254,184,102);
+  border:  black 3px solid;
+
+
+}
+
+#citysal{
+border: rgb(34, 56, 87) 6px solid;
+}
+
+.length{
+  font-size: 80px;
+  font-weight: 600;
+}
+
+
+
+
