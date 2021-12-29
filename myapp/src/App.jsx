@@ -39,7 +39,7 @@ await fetch("http://3.249.231.212:8000/hesed")
   setHesedData(data)
 })
 
-  client.send("React Connected")
+  // client.send("React Connected")
   }, [])
 
   useEffect(() => {
