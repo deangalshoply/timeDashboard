@@ -5,7 +5,7 @@ import React,{useEffect,useState} from 'react'
 import { w3cwebsocket }  from 'websocket'
 import { Route,Routes } from 'react-router-dom'
 import { useSelector,useDispatch } from "react-redux";
-import { fetchHesedData, fetchMbsData, postHesedData, postMbsData, deleteHesedData } from './redux/actions';
+import { fetchHesedData, fetchMbsData, postHesedData, postMbsData, deleteHesedData, deleteMbsData } from './redux/actions';
 import { Topbar,AllLines } from './components/compnentsIndex';
 function App() {
 
