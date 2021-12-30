@@ -55,10 +55,18 @@ app.post('/done',function(req,res) {
 
 })
 
-//done eventEmiter
+//delete eventEmiter
 app.post('/delete',function(req,res) {
     doneBody = req.body;
     eventEmitter.emit('onDelete', doneBody.id ,(req.headers.domain))
+    res.status(200).send('OK')
+
+
+})
+
+//clear eventEmiter
+app.post('/clear',function(req,res) {
+    eventEmitter.emit('onClear', (req.headers.domain))
     res.status(200).send('OK')
 
 
@@ -287,7 +295,39 @@ eventEmitter.on('onDelete', function( id, domain ){
        
     }});
 
-    // connection.send([data, domain, ' done'])  
+})
+
+// on delete write to json and send data to react
+eventEmitter.on('onClear', function(domain){
+
+    let jsonPath = (domain == 'bundles') ? 'mbs.json' : 'hesed.json' //json path trenry
+
+    fs.readFile( jsonPath , 'utf8', function readFileCallback(err, data){
+        if (err){
+            console.log(err);
+        } else {
+            
+        let obj = JSON.parse(data); //now it an object
+
+         obj[0].data = [];
+         obj[1].data = [];
+         obj[2].data = [];
+         obj[3].data = [];
+
+
+        let json = JSON.stringify(obj); //convert it back to json
+
+        fs.writeFile(jsonPath, json, 'utf8', function(err) {
+            if (err) throw err;
+
+            console.log("Clear Finished\n");
+            connection.send([domain, ' clear'])  
+           
+        
+            }); // write it back 
+       
+    }});
+
 })
 
 // all wss .on
