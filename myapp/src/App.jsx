@@ -5,7 +5,7 @@ import React,{useEffect,useState} from 'react'
 import { w3cwebsocket }  from 'websocket'
 import { Route,Routes } from 'react-router-dom'
 import { useSelector,useDispatch } from "react-redux";
-import { fetchHesedData, fetchMbsData, postHesedData, postMbsData, deleteHesedData, deleteMbsData } from './redux/actions';
+import { fetchHesedData, fetchMbsData, postHesedData, postMbsData, deleteHesedData, deleteMbsData, clearMbsData, clearHesedData } from './redux/actions';
 import { Topbar,AllLines } from './components/compnentsIndex';
 function App() {
 
@@ -123,6 +123,18 @@ if(msgData[2] == 'new'){
   
   }
 
+  if(msgData[1] == 'clear'){
+    if(msgData[0] == "bundles" ){
+   
+      dispatch(clearMbsData())
+    
+    } else if(msgData[0] == "hesed" ) {
+      
+      dispatch(clearHesedData())
+      
+      }
+  
+  }
 }
 
 

@@ -56,6 +56,13 @@ export const deleteMbsData = (ordersId) => {
     }
 }
 
+export const clearMbsData = () => {
+    return{
+        type: 'CLEAR_MBS_DATA',
+        
+    }
+}
+
 
 //HESED
 
@@ -83,6 +90,12 @@ export const deleteHesedData = (ordersId) => {
     }
 }
 
+export const clearHesedData = () => {
+    return{
+        type: 'CLEAR_HESED_DATA',
+        
+    }
+}
 
 
 

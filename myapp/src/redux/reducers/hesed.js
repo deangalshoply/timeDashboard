@@ -35,6 +35,16 @@ const hesedReducer = (state = initialState, action) => {
 
             }   else return state
 
+            case 'CLEAR_MBS_DATA':
+                let clearState = [...state]
+                clearState[0].data = []
+                clearState[1].data = []
+                clearState[2].data = []
+                clearState[3].data = []
+                
+                return clearState 
+
+
         
         case 'DELETE_HESED_DATA':
             const deleteId = action.payload
