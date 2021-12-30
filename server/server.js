@@ -2,7 +2,6 @@
 let express = require('express')
 let cors = require('cors')
 let bodyParser = require('body-parser')
-const axios = require('axios')
 let app = express()
 
 let events = require('events')
@@ -195,7 +194,6 @@ eventEmitter.on('onDeliver', function( id, domain ){
        
     }});
 
-    // connection.send([data, domain, ' gather'])  
 })
 
 // on done write to json and send data to react
