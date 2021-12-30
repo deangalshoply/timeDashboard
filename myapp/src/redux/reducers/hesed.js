@@ -1,4 +1,4 @@
-const initialState = {}
+const initialState = []
 
 const hesedReducer = (state = initialState, action) => {
     switch(action.type){

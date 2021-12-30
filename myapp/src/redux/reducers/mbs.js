@@ -1,4 +1,4 @@
-const initialState = {}
+const initialState = []
 
 const mbsReducer = (state = initialState, action) => {
     switch(action.type){
@@ -38,7 +38,7 @@ const mbsReducer = (state = initialState, action) => {
                 clearState[1].data = []
                 clearState[2].data = []
                 clearState[3].data = []
-                
+
                 return clearState 
 
 
