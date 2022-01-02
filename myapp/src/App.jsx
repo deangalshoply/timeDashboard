@@ -11,7 +11,7 @@ function App() {
 
   
 
-let client = new w3cwebsocket("ws://localhost:5000");
+let client = new w3cwebsocket("ws://34.245.53.115:5000");
 client.onopen = message => {
   console.log("React Connected to 8080");
 } 
@@ -27,13 +27,13 @@ client.onopen = message => {
 //load data from api
   useEffect(async() => {
     
-await fetch("http://localhost:8000/mbs")
+await fetch("http://34.245.53.115:8000/mbs")
 .then(respone => respone.json())
 .then(data => {
   setMbsData(data)
 })
 
-await fetch("http://localhost:8000/hesed")
+await fetch("http://34.245.53.115:8000/hesed")
 .then(respone => respone.json())
 .then(data => {
   setHesedData(data)
