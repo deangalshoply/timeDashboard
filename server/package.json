@@ -17,6 +17,7 @@
     "concurrently": "^6.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "googleapis": "^92.0.0",
     "websocket": "^1.0.34"
   },
   "devDependencies": {

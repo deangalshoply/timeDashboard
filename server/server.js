@@ -3,6 +3,7 @@ let express = require('express')
 let cors = require('cors')
 let bodyParser = require('body-parser')
 let app = express()
+const {google} = require("googleapis")
 
 let events = require('events')
 let eventEmitter = new events.EventEmitter();
@@ -64,7 +65,7 @@ app.post('/delete',function(req,res) {
 })
 
 //clear eventEmiter
-app.post('/clear',function(req,res) {
+app.post('/clear',async function(req,res) {
     eventEmitter.emit('onClear', (req.headers.domain))
     res.status(200).send('OK')
 
@@ -78,6 +79,11 @@ app.get('/hesed',function(req,res) {
 app.get('/mbs',function(req,res) {
 
     res.send(JSON.parse(fs.readFileSync('mbs.json', "utf8")))
+})
+
+app.get('/new',function(req,res) {
+
+    res.send(newBody)
 })
 
 
@@ -106,6 +112,7 @@ const httpServer = http.createServer((req, res) => {
 const wss = new WebsocketServer({
     "httpServer": httpServer
 })
+
 
 
 // on new write to json and send data to react
@@ -295,10 +302,141 @@ eventEmitter.on('onDelete', function( id, domain ){
 
 })
 
-// on delete write to json and send data to react
-eventEmitter.on('onClear', function(domain){
+// on 00:00 write to sheets and clear jsons
+eventEmitter.on('onClear',async function(domain){
 
     let jsonPath = (domain == 'bundles') ? 'mbs.json' : 'hesed.json' //json path trenry
+ 
+
+    fs.readFile( jsonPath , 'utf8', async function readFileCallback(err, data){
+        if (err){
+            console.log(err);
+        } else {
+        let obj = JSON.parse(data); //now it an object
+
+            const auth = new google.auth.GoogleAuth({
+                keyFile: "secret.json",
+                scopes : "https://www.googleapis.com/auth/spreadsheets"
+            })
+            //create client instance for auth
+            const client = await auth.getClient();
+        
+            //instance of googlesapi
+        
+            const googleSheets = google.sheets({ version: "v4", auth: client });
+            const mbsSpreadsheetId = '1njadZ6tJwpjC0JRAwsvOoWZOCBZXkveDZDFHizqezY8'
+            const hesedSpreadsheetId = '1FOYelVsAEpkbNQZPTFZouCxsBJ3zACmJIlVqQfemWe8'
+
+            let spreadsheetId = (domain == 'bundles') ? mbsSpreadsheetId : hesedSpreadsheetId
+            //create write to sheets array
+
+
+               let newData = obj[0].data.map((item) => {
+                       
+                
+                        return [item.id,item.timestamp]
+                
+                        })
+        
+                      let today = new Date();
+        
+                        newData.splice(0,0,[])
+                        newData.splice(1,0,[today.toLocaleDateString("en-GB")])
+                        newData.splice(2,0,[])
+                        newData.splice(3,0,['new'])
+                        newData.splice(4,0,['ID','Timestamp'])
+        
+        
+                let gatherData = obj[1].data.map((item) => {
+                       
+                    return [item.id,item.timestamp]
+            
+                    })
+                    gatherData.splice(0,0,[])
+                    gatherData.splice(1,0,[])
+                    gatherData.splice(2,0,[])
+                    gatherData.splice(3,0,['gather'])
+                    gatherData.splice(4,0,['ID','Timestamp'])
+        
+        
+                let deliverData = obj[2].data.map((item) => {
+                   
+                    return [item.id,item.timestamp]
+            
+                    })
+                    
+                    deliverData.splice(0,0,[])
+                    deliverData.splice(1,0,[])
+                    deliverData.splice(2,0,[])
+                    deliverData.splice(3,0,['deliver'])
+                    deliverData.splice(4,0,['ID','Timestamp'])
+        
+                    
+                let doneData = obj[3].data.map((item) => {
+                   
+                    return [item.id,item.timestamp]
+            
+                    })
+                    doneData.splice(0,0,[])
+                    doneData.splice(1,0,[])
+                    doneData.splice(2,0,[])
+                    doneData.splice(3,0,['done'])
+                    doneData.splice(4,0,['ID','Timestamp'])
+                    
+            // Write Rows to spreadsheet
+           
+            await googleSheets.spreadsheets.values.append({
+                auth,
+                spreadsheetId,
+                range: "Sheet1!A:B",
+                valueInputOption: "USER_ENTERED",
+                resource: {
+                    values: newData
+                }
+        
+            })
+        
+            await googleSheets.spreadsheets.values.append({
+                auth,
+                spreadsheetId,
+                range: "Sheet1!D:E",
+                valueInputOption: "USER_ENTERED",
+                resource: {
+                    values: gatherData
+                    
+                }
+            })
+            await googleSheets.spreadsheets.values.append({
+                auth,
+                spreadsheetId,
+                range: "Sheet1!G:H",
+                valueInputOption: "USER_ENTERED",
+                resource: {
+                    values: deliverData
+                }
+            })
+            await googleSheets.spreadsheets.values.append({
+                auth,
+                spreadsheetId,
+                range: "Sheet1!J:K",
+                valueInputOption: "USER_ENTERED",
+                resource: {
+                    values: doneData
+                }
+            })
+
+            
+         
+        
+
+
+
+       
+    }});
+
+   
+////clear data
+
 
     fs.readFile( jsonPath , 'utf8', function readFileCallback(err, data){
         if (err){
@@ -331,6 +469,7 @@ eventEmitter.on('onClear', function(domain){
 // all wss .on
 wss.on("request", request => {
    connection =  request.accept(null, request.origin)
+
    connection.on("open", () => console.log("OPENED!"))
    connection.on("close", () => console.log("CLOSED!"))
 
@@ -339,7 +478,7 @@ wss.on("request", request => {
    })
 })
 
-httpServer.listen(8080, () => console.log("Listening on 8080"));
+httpServer.listen(5000, () => console.log("Listening on 8080"));
 
 
 
