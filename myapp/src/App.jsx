@@ -11,7 +11,7 @@ function App() {
 
   
 
-let client = new w3cwebsocket("ws://34.245.53.115:5000");
+let client = new w3cwebsocket("ws://34.245.53.115:8080");
 client.onopen = message => {
   console.log("React Connected to 8080");
 } 
