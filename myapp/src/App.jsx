@@ -23,7 +23,7 @@ client.onopen = message => {
 
   let [mbsData, setMbsData] = useState([]);
   let [hesedData, setHesedData] = useState([]);
-//34.245.53.115
+
 //load data from api
   useEffect(async() => {
     
