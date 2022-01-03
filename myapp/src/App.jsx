@@ -7,11 +7,13 @@ import { Route,Routes } from 'react-router-dom'
 import { useSelector,useDispatch } from "react-redux";
 import { fetchHesedData, fetchMbsData, postHesedData, postMbsData, deleteHesedData, deleteMbsData, clearMbsData, clearHesedData } from './redux/actions';
 import { Topbar,AllLines } from './components/compnentsIndex';
+import { currentTime } from './utils';
+import axios from 'axios'
 function App() {
 
   
 
-let client = new w3cwebsocket("ws://34.245.53.115:8080");
+let client = new w3cwebsocket("ws://localhost:8080");
 client.onopen = message => {
   console.log("React Connected to 8080");
 } 
@@ -23,21 +25,65 @@ client.onopen = message => {
 
   let [mbsData, setMbsData] = useState([]);
   let [hesedData, setHesedData] = useState([]);
+  let [sTime, setTime] = useState('');
+
+
+  //time interval
+  setInterval(function() {
+
+    setTime(currentTime())
+    },35000)
+
+    useEffect(() => {
+      
+      console.log("Time: " + sTime);
+      if(sTime == '2359'){
+       
+     
+        
+        var config = {
+          method: 'post',
+          url: 'http://localhost:8000/clear',
+          headers: { 
+            'domain': 'bundles', 
+            'Content-Type': 'application/json'
+          },
+        };
+        
+        axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          console.log("Clear Succses!");
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+        
+
+
+      }
+    }, [sTime])
+
 
 //load data from api
   useEffect(async() => {
     
-await fetch("http://34.245.53.115:8000/mbs")
+await fetch("http://localhost:8000/mbs")
 .then(respone => respone.json())
 .then(data => {
   setMbsData(data)
 })
 
-await fetch("http://34.245.53.115:8000/hesed")
+await fetch("http://localhost:8000/hesed")
 .then(respone => respone.json())
 .then(data => {
   setHesedData(data)
 })
+
+setTime(currentTime())
+
 
   // client.send("React Connected")
   }, [])
@@ -52,7 +98,6 @@ await fetch("http://34.245.53.115:8000/hesed")
     dispatch(fetchHesedData(hesedData))
 
   }, [hesedData])
-
 
 // post
 client.onmessage = message => {
@@ -80,7 +125,9 @@ if(msgData[2] == 'new'){
     } else if(msgData[1] == "hesed" ) {
       
       dispatch(postHesedData(JSON.parse(msgData[0]),'gather'))
-      
+      //look for matchnig id in new redux
+      //if match id get value and make  avg
+      //dipatch avg in redux
       }
   }
   

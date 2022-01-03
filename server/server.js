@@ -72,6 +72,22 @@ app.post('/clear',async function(req,res) {
 
 })
 
+
+//get mbs wp-json data
+app.get('/mbs-api',function(req,res) {
+    axios.get("https://mybundles.co.il/wp-json/api/v1/orders", {
+    headers: {
+        'Cookie': 'open-site=yes'
+    }
+})
+.then(result => {
+    res.send(result.data)
+   
+}).catch(error => {
+    console.log(error);
+    })
+})
+
 app.get('/hesed',function(req,res) {
   res.send(JSON.parse(fs.readFileSync('hesed.json', "utf8")))
 })
@@ -134,8 +150,6 @@ eventEmitter.on('onNew', function( id, domain ){
         fs.writeFile(jsonPath, json, 'utf8', function(err) {
             if (err) throw err;
 
-            // console.log("The written has the following contents:");
-            // console.log(JSON.parse(fs.readFileSync(jsonPath, "utf8"))[0]);  
             console.log("File written successfully\n");
             connection.send([JSON.stringify(item)," " + domain, ' new'])  
             
@@ -155,10 +169,20 @@ eventEmitter.on('onGather', function( id, domain ){
         if (err){
             console.log(err);
         } else {
-            
-        let obj = JSON.parse(data); //now it an object
-        let item = {id: id, timestamp: currentTime()}
 
+       
+
+        let obj = JSON.parse(data); //now it an object
+
+        let checkAvg = obj[0].data.filter(element => element.id == id)
+        // console.log(obj[0].data.forEach(element => {
+        //   console.log(element.id);
+        //   console.log(id);  
+        // }));
+        console.log(checkAvg[0].id);
+        
+        let item = {id: id, timestamp: currentTime()}
+        //avg func  
         obj[1].data.push(item); //add some data
         let json = JSON.stringify(obj); //convert it back to json
 
@@ -340,11 +364,11 @@ eventEmitter.on('onClear',async function(domain){
         
                       let today = new Date();
         
-                        newData.splice(0,0,[])
+                        newData.splice(0,0,[""])
                         newData.splice(1,0,[today.toLocaleDateString("en-GB")])
-                        newData.splice(2,0,[])
-                        newData.splice(3,0,['new'])
-                        newData.splice(4,0,['ID','Timestamp'])
+                        newData.splice(2,0,[""])
+                        newData.splice(3,0,['','יציאת בון'])
+                        newData.splice(4,0,['ID','שעה'])
         
         
                 let gatherData = obj[1].data.map((item) => {
@@ -352,12 +376,11 @@ eventEmitter.on('onClear',async function(domain){
                     return [item.id,item.timestamp]
             
                     })
-                    gatherData.splice(0,0,[])
-                    gatherData.splice(1,0,[])
-                    gatherData.splice(2,0,[])
-                    gatherData.splice(3,0,['gather'])
-                    gatherData.splice(4,0,['ID','Timestamp'])
-        
+                    gatherData.splice(0,0,[""])
+                    gatherData.splice(1,0,[""])
+                    gatherData.splice(2,0,[""])
+                    gatherData.splice(3,0,['','לוקט'])
+                    gatherData.splice(4,0,['ID','שעה'])
         
                 let deliverData = obj[2].data.map((item) => {
                    
@@ -365,11 +388,11 @@ eventEmitter.on('onClear',async function(domain){
             
                     })
                     
-                    deliverData.splice(0,0,[])
-                    deliverData.splice(1,0,[])
-                    deliverData.splice(2,0,[])
-                    deliverData.splice(3,0,['deliver'])
-                    deliverData.splice(4,0,['ID','Timestamp'])
+                    deliverData.splice(0,0,[""])
+                    deliverData.splice(1,0,[""])
+                    deliverData.splice(2,0,[""])
+                    deliverData.splice(3,0,['','שולח'])
+                    deliverData.splice(4,0,['ID','שעה'])
         
                     
                 let doneData = obj[3].data.map((item) => {
@@ -377,56 +400,73 @@ eventEmitter.on('onClear',async function(domain){
                     return [item.id,item.timestamp]
             
                     })
-                    doneData.splice(0,0,[])
-                    doneData.splice(1,0,[])
-                    doneData.splice(2,0,[])
-                    doneData.splice(3,0,['done'])
-                    doneData.splice(4,0,['ID','Timestamp'])
+                    doneData.splice(0,0,[""])
+                    doneData.splice(1,0,[""])
+                    doneData.splice(2,0,[""])
+                    doneData.splice(3,0,['','סופק'])
+                    doneData.splice(4,0,['ID','שעה'])
                     
-            // Write Rows to spreadsheet
-           
-            await googleSheets.spreadsheets.values.append({
-                auth,
-                spreadsheetId,
-                range: "Sheet1!A:B",
-                valueInputOption: "USER_ENTERED",
-                resource: {
-                    values: newData
-                }
-        
-            })
-        
-            await googleSheets.spreadsheets.values.append({
-                auth,
-                spreadsheetId,
-                range: "Sheet1!D:E",
-                valueInputOption: "USER_ENTERED",
-                resource: {
-                    values: gatherData
-                    
-                }
-            })
-            await googleSheets.spreadsheets.values.append({
-                auth,
-                spreadsheetId,
-                range: "Sheet1!G:H",
-                valueInputOption: "USER_ENTERED",
-                resource: {
-                    values: deliverData
-                }
-            })
-            await googleSheets.spreadsheets.values.append({
-                auth,
-                spreadsheetId,
-                range: "Sheet1!J:K",
-                valueInputOption: "USER_ENTERED",
-                resource: {
-                    values: doneData
-                }
-            })
 
+                 let tableMaxIndex =  Math.max(newData.length , gatherData.length, deliverData.length, doneData.length)
+
+                 fs.readFile( 'sheetslen.json' ,'utf8',async function readFileCallback(err, data){
+                    if (err){
+                        console.log(err);
+                    } else {
+
+                   
+                    await googleSheets.spreadsheets.values.append({
+                        auth,
+                        spreadsheetId,
+                        range: `Sheet1!A${data}:B${data}`,
+                        valueInputOption: "USER_ENTERED",
+                        resource: {
+                            values: newData
+                        }
+
+                    })
+
+                    await googleSheets.spreadsheets.values.append({
+                        auth,
+                        spreadsheetId,
+                        range: `Sheet1!C${data}:D${data}`,
+                        valueInputOption: "USER_ENTERED",
+                        resource: {
+                            values: gatherData
+                            
+                        }
+                    })
+                    await googleSheets.spreadsheets.values.append({
+                        auth,
+                        spreadsheetId,
+                        range: `Sheet1!E${data}:F${data}`,
+                        valueInputOption: "USER_ENTERED",
+                        resource: {
+                            values: deliverData
+                        }
+                    })
+                    await googleSheets.spreadsheets.values.append({
+                        auth,
+                        spreadsheetId,
+                        range: `Sheet1!G${data}:H${data}`,
+                        valueInputOption: "USER_ENTERED",
+                        resource: {
+                            values: doneData
+                        }
+                    })
+                    
+                    //update in json file sheet length
+                    let num = parseInt(data) + tableMaxIndex + 1
+                    fs.writeFile('sheetslen.json', num.toString() , function(err) {
+                        if (err) throw err;
             
-         
+                        console.log("Text Write\n");
+                       
+                    
+                        }); // write it back 
+                   
+                }});
+           
         
 
 
