@@ -76,7 +76,7 @@ app.post('/clear',async function(req,res) {
 
 //get mbs wp-json data
 app.get('/test',function(req,res) {
-    axios.get("https://dev.mybundles.co.il/wp-json/api/v1/orders", {
+    axios.get("https://mybundles.co.il/wp-json/api/v1/orders", {
     headers: {
         'Cookie': 'open-site=yes'
     }
