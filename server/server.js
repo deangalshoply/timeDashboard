@@ -4,6 +4,7 @@ let cors = require('cors')
 let bodyParser = require('body-parser')
 let app = express()
 const {google} = require("googleapis")
+const axios = require('axios')
 
 let events = require('events')
 let eventEmitter = new events.EventEmitter();
@@ -74,8 +75,8 @@ app.post('/clear',async function(req,res) {
 
 
 //get mbs wp-json data
-app.get('/mbs-api',function(req,res) {
-    axios.get("https://mybundles.co.il/wp-json/api/v1/orders", {
+app.get('/test',function(req,res) {
+    axios.get("https://dev.mybundles.co.il/wp-json/api/v1/orders", {
     headers: {
         'Cookie': 'open-site=yes'
     }
